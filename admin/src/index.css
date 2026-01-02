@@ -1,0 +1,343 @@
+
+@import "tailwindcss";
+
+
+/* =========================
+   TEDx design tokens & reset
+   ========================= */
+:root{
+  --tedx-red: #e21b23;      /* main TEDx red */
+  --tedx-red-dark: #b41618; /* darker */
+  --tedx-black: #000000;
+  --tedx-ink: #0b0b0b;
+  --tedx-muted: #3b0b0b;
+  --tedx-white: #ffffff;
+
+  /* layout tokens */
+  --sidebar-width: 16rem; /* w-64 */
+  --topbar-height: 4rem;  /* 64px */
+  --gutter: 1rem;
+  --container-max: 1100px;
+}
+
+/* Basic resets & global app background */
+html, body, #root {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  background: var(--tedx-black);
+  color: var(--tedx-white);
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Make all elements use border-box */
+*, *::before, *::after { box-sizing: inherit; }
+
+/* =========================
+   Layout (sidebar, header, main)
+   ========================= */
+
+/* Sidebar: fixed left, full height, TEDx look */
+aside {
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: var(--sidebar-width);
+  padding: 1rem;
+  background: var(--tedx-black);
+  border-right: 1px solid rgba(178, 13, 18, 0.65); /* red border */
+  z-index: 40;
+  transform: translateX(0);
+  transition: transform 220ms ease;
+}
+
+/* Mobile initial state: hide sidebar by default if .mobile-hidden applied */
+aside.mobile-hidden {
+  transform: translateX(-120%);
+}
+
+/* Mobile close button (we keep appearance handled in JSX) */
+aside button { background: transparent; color: var(--tedx-white); }
+
+/* Mobile overlay when sidebar is open */
+.sidebar-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  z-index: 35;
+  opacity: 1;
+  transition: opacity 200ms ease;
+  pointer-events: auto;
+}
+
+/* Topbar (mobile) - fixed at top */
+header[role="topbar"], header.topbar {
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: var(--topbar-height);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 0.75rem;
+  background: var(--tedx-black);
+  border-bottom: 1px solid rgba(178, 13, 18, 0.6);
+  z-index: 30;
+}
+
+/* Fallback header class */
+.topbar { position: fixed; }
+
+/* Main content area - default (mobile) keeps below header */
+main {
+  min-height: 100vh;
+  background: #0f0f10; /* subtle black/gray */
+  padding: 1.5rem; /* default mobile padding */
+  padding-top: calc(var(--topbar-height) + 1rem); /* keep below mobile header */
+  transition: margin-left 220ms ease, padding-top 220ms ease;
+}
+
+/* Desktop: from sm (640px) upward, show sidebar and push main content right */
+@media (min-width: 640px) {
+  /* Sidebar always visible in desktop - ensure transform is none (in case mobile-hidden left it translated) */
+  aside {
+    transform: translateX(0) !important;
+  }
+
+  /* Remove top padding from main (no fixed mobile header) and add left margin to account for sidebar */
+  main {
+    margin-left: var(--sidebar-width);
+    padding-top: 1.5rem;
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+
+  /* Hide the mobile-only header */
+  header[role="topbar"], header.topbar {
+    display: none;
+  }
+}
+
+/* If you use the .sm\\:ml-64 class from compiled tailwind, this ensures same result as above.
+   NOTE: CSS escaping for colon class in compiled output: */
+.sm\\:ml-64 { margin-left: var(--sidebar-width); }
+
+/* =========================
+   Visual pieces (logo, menu, active states)
+   ========================= */
+
+/* TED logo circle */
+.ted-logo {
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 9999px;
+  background: var(--tedx-red);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--tedx-black);
+  font-weight: 800;
+  margin-right: 0.5rem;
+}
+
+/* Menu link base */
+.nav-link {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  border-radius: 8px;
+  color: var(--tedx-white);
+  text-decoration: none;
+  font-size: 0.95rem;
+  transition: background-color .15s ease, color .15s ease;
+}
+
+/* Hover + focus */
+.nav-link:hover,
+.nav-link:focus {
+  background: rgba(178, 13, 18, 0.12); /* subtle red tint */
+  outline: none;
+}
+
+/* Active / selected link */
+.nav-link.active, .nav-link[aria-current="page"] {
+  background: var(--tedx-red);
+  color: var(--tedx-black);
+  font-weight: 700;
+}
+
+/* small subtitle under title */
+.sidebar-sub {
+  font-size: 0.72rem;
+  color: rgba(255,255,255,0.64);
+}
+
+/* bottom logout button */
+.logout-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  border-radius: 8px;
+  background: transparent;
+  color: rgba(255,255,255,0.9);
+  border: 1px solid transparent;
+  cursor: pointer;
+}
+.logout-btn:hover { background: rgba(178, 13, 18, 0.08); }
+
+/* =========================
+   Buttons & controls
+   ========================= */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: .5rem;
+  padding: .5rem .75rem;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: background .12s ease, color .12s ease, border-color .12s ease;
+}
+
+.btn-red {
+  background: var(--tedx-red);
+  color: var(--tedx-black);
+}
+.btn-red:hover { background: var(--tedx-red-dark); }
+
+.btn-outline {
+  background: transparent;
+  color: var(--tedx-white);
+  border: 1px solid rgba(178, 13, 18, 0.6);
+}
+.btn-outline:hover { background: rgba(178, 13, 18, 0.08); }
+
+/* =========================
+   Cards / Containers
+   ========================= */
+.card {
+  background: rgba(255,255,255,0.02);
+  border-radius: 16px;
+  padding: 1rem;
+  border: 1px solid rgba(178, 13, 18, 0.45);
+  color: var(--tedx-white);
+  min-height: 5.5rem;
+}
+
+/* Inner content wrapper to keep consistent site width */
+.container {
+  max-width: var(--container-max);
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: var(--gutter);
+  padding-right: var(--gutter);
+}
+
+/* Grid helpers for dashboard panels */
+.grid-3 {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+}
+@media (min-width: 768px) {
+  .grid-3 { grid-template-columns: repeat(2, 1fr); }
+}
+@media (min-width: 1024px) {
+  .grid-3 { grid-template-columns: repeat(3, 1fr); }
+}
+
+/* Text helpers */
+.muted { color: rgba(255,255,255,0.6); font-size: .9rem; }
+
+/* =========================
+   Forms / tables posture
+   ========================= */
+.form-row { display:flex; gap: .75rem; align-items:center; margin-bottom: .75rem; }
+.form-label { min-width: 8rem; color: rgba(255,255,255,0.8); font-size: .95rem; }
+
+/* Tables */
+table { width: 100%; border-collapse: collapse; color: var(--tedx-white); }
+table th, table td { padding: .5rem .75rem; border-bottom: 1px solid rgba(255,255,255,0.04); text-align: left; }
+
+/* =========================
+   Small helpers & accessibility
+   ========================= */
+.sr-only {
+  position:absolute!important;
+  height:1px;width:1px;overflow:hidden;
+  clip:rect(1px,1px,1px,1px);white-space:nowrap;
+}
+
+/* Utility to force scrollable content area */
+.scrollable { overflow: auto; }
+
+
+:root{
+  --tedx-red: #e21b23;
+  --tedx-dark: #0b0b0b;
+  --tedx-dark-2: #0f0f10;
+  --muted: rgba(255,255,255,0.6);
+  --card-bg: rgba(255,255,255,0.02);
+  --card-border: rgba(178,13,18,0.12);
+}
+
+html,body,#root{ height:100%; margin:0; background:var(--tedx-dark); color:white; font-family:Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial; }
+
+/* Page layout */
+.ml-page { padding: 20px; max-width:1200px; margin: 0 auto; box-sizing: border-box; }
+.ml-row { display:flex; justify-content:space-between; align-items:center; gap:12px; margin-bottom: 12px; }
+.ml-h1 { margin:0; font-size:20px; font-weight:800; }
+
+/* grid */
+.ml-grid { display:grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+/* cards */
+.ml-card { background: var(--card-bg); border: 1px solid var(--card-border); padding: 12px; border-radius: 10px; box-sizing: border-box; }
+.ml-card-head { font-weight:700; margin-bottom: 10px; }
+
+/* forms */
+.ml-input { width:100%; padding:10px; border-radius:8px; background:transparent; border:1px solid rgba(255,255,255,0.06); color:white; box-sizing:border-box; margin-bottom:8px; }
+.ml-file { color:white; margin-top:6px; }
+
+/* buttons */
+.ml-actions-row { display:flex; gap:8px; margin-top:8px; }
+.ml-btn-primary { background: var(--tedx-red); color: black; border:none; padding:8px 12px; border-radius:8px; font-weight:700; cursor:pointer; }
+.ml-btn-outline { background:transparent; color:white; border:1px solid rgba(255,255,255,0.06); padding:8px 12px; border-radius:8px; text-decoration:none; display:inline-flex; align-items:center; justify-content:center; }
+.ml-btn { background:transparent; color:white; border:1px solid rgba(255,255,255,0.06); padding:6px 10px; border-radius:8px; cursor:pointer; }
+.ml-btn-ghost { background:transparent; color:white; border:1px dashed rgba(255,255,255,0.06); padding:6px 10px; border-radius:8px; cursor:pointer; }
+.ml-btn-danger { background: var(--tedx-red); color:white; padding:6px 8px; border-radius:8px; border:none; cursor:pointer; }
+
+/* list */
+.ml-list { display:grid; gap:8px; }
+
+/* media card */
+.ml-card .ml-thumb-wrap { display:inline-block; width:120px; height:80px; border-radius:8px; overflow:hidden; background: rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.04); }
+.ml-thumb { width:100%; height:100%; object-fit:cover; display:block; }
+.ml-thumb-placeholder { width:120px; height:80px; background: rgba(255,255,255,0.02); border-radius:8px; }
+
+/* layout for a single media row (MediaCard component uses these) */
+.ml-card .ml-meta { display:flex; flex-direction:column; margin-left:12px; }
+.ml-card .ml-title { font-weight:700; }
+.ml-card .ml-sub { color:var(--muted); font-size:13px; margin-top:2px; }
+.ml-card .ml-actions { margin-left:auto; display:flex; gap:8px; align-items:center; }
+
+/* helper */
+.ml-muted { color: var(--muted); padding:8px 0; }
+.ml-error { color: #ff6b6b; margin-top:8px; }
+
+/* responsive */
+@media (max-width:900px){
+  .ml-grid { grid-template-columns: 1fr; }
+  .ml-card .ml-actions { margin-top:8px; }
+}
+
