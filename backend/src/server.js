@@ -231,17 +231,20 @@ const adminMediaRoutes = require('../routes/admin/media');
 const adminBookingsRouter = require('../routes/admin/bookings');
 
 const app = express();
+// const allowed = [
+//   'http://localhost:5173',
+//   'http://localhost:5174',
+//   'http://127.0.0.1:5174',
+//   'http://localhost:4173',
+//   'https://tedxsmec-website.vercel.app',
+//   'https://tedxsmec-admin.vercel.app'
+// ];
 
 /* ---------- CORS ---------- */
-const allowed = [
-  process.env.CORS_ORIGIN,
-  'http://localhost:5173',
-  'http://localhost:5174',
-  'http://127.0.0.1:5174',
-  'http://localhost:4173',
-  'https://tedxsmec-website.vercel.app',
-  'https://tedxsmec-admin.vercel.app'
-].filter(Boolean);
+const allowed = (process.env.CORS_ORIGINS || '')
+  .split(',')
+  .map(origin => origin.trim())
+  .filter(Boolean);
 
 const corsOptions = {
   origin(origin, callback) {
