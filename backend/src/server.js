@@ -217,18 +217,18 @@ const cors = require('cors');
 const mongoose = require('mongoose');
 const path = require('path');
 
-const eventsRouter = require('./routes/events');
-const bookingRouter = require('./routes/booking');
-const webhookRouter = require('./routes/webhook');
+const eventsRouter = require('../routes/events');
+const bookingRouter = require('../routes/booking');
+const webhookRouter = require('../routes/webhook');
 
-const adminAuthRouter = require('./routes/admin/auth');
-const adminEventsRouter = require('./routes/admin/events');
-const adminSpeakersRouter = require('./routes/admin/speakers');
-const adminSponsorsRouter = require('./routes/admin/sponsors');
-const adminOrganizersRouter = require('./routes/admin/organizers');
-const adminCoordinatorsRouter = require('./routes/admin/coordinators');
-const adminMediaRoutes = require('./routes/admin/media');
-const adminBookingsRouter = require('./routes/admin/bookings');
+const adminAuthRouter = require('../routes/admin/auth');
+const adminEventsRouter = require('../routes/admin/events');
+const adminSpeakersRouter = require('../routes/admin/speakers');
+const adminSponsorsRouter = require('../routes/admin/sponsors');
+const adminOrganizersRouter = require('../routes/admin/organizers');
+const adminCoordinatorsRouter = require('../routes/admin/coordinators');
+const adminMediaRoutes = require('../routes/admin/media');
+const adminBookingsRouter = require('../routes/admin/bookings');
 
 const app = express();
 
@@ -239,7 +239,7 @@ const allowed = [
   'http://localhost:5174',
   'http://127.0.0.1:5174',
   'http://localhost:4173',
-  'https://tedx-smec-website.vercel.app'
+  'https://tedxsmec-website.vercel.app'
 ].filter(Boolean);
 
 const corsOptions = {
