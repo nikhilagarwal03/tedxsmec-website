@@ -239,7 +239,8 @@ const allowed = [
   'http://localhost:5174',
   'http://127.0.0.1:5174',
   'http://localhost:4173',
-  'https://tedxsmec-website.vercel.app'
+  'https://tedxsmec-website.vercel.app',
+  'https://tedxsmec-admin.vercel.app'
 ].filter(Boolean);
 
 const corsOptions = {
@@ -320,5 +321,5 @@ app.use('/api/admin/bookings', adminBookingsRouter);
 /* ---------- START ---------- */
 const port = process.env.PORT || 4000;
 app.listen(port, () => {
-  console.log(`🚀 Backend listening at http://localhost:${port}`);
+  console.log(`🚀 Backend listening on port ${port}`);
 });
